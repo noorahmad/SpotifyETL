@@ -1,2 +1,3 @@
+from spotify import *
 
-print('Hello World')
+print(authenticate())
