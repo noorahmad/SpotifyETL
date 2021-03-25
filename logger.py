@@ -6,7 +6,7 @@ TODO: extended logging e.g. info vs error
 """
 
 logger = logging.getLogger('root')
-FORMAT = "[%(asctime)s] %(filename)s:%(lineno)s - %(funcName)20s(): %(message)s"
+FORMAT = "[%(asctime)s] %(filename)s:%(lineno)s - %(funcName)s(): %(message)s"
 logging.basicConfig(filename=r"logs/log.txt",
                     format=FORMAT,
                     datefmt='%H:%M:%S')
