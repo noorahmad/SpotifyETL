@@ -1,9 +1,5 @@
 import logging
 import inspect
-"""
-TODO: extended logging e.g. info vs error
-      add severity
-"""
 
 logger = logging.getLogger('root')
 FORMAT = "[%(asctime)s] %(levelname)s %(filename)s:%(lineno)s - %(funcName)s(): %(message)s"
