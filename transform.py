@@ -18,7 +18,7 @@ def transform(song_file):
             
             # TODO: Python is really fucking stupid and this is only a temporary solution
             track_obj.artist = file_split[0]
-            
+            return track_obj
         # if there's more than one dash then deal with it later
         else:
             logger.info('Too many dashes -- ' + song_file[0])
