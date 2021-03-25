@@ -2,7 +2,9 @@ import os
 from logger import *
 
 def read_all_files(filepath):
-    "Reads files of the given file path and return in an array"
+    """
+        Reads files of the given file path and return in an array
+    """
     file_list = []
     try:
         for root, dirs, files, in os.walk(filepath):

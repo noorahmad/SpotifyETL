@@ -1,6 +1,6 @@
 class Track:
     """
-        song="", artist="", album="", filename="", filepath=""
+        song="",    artist="",  album="",   filename="",    filepath=""
         Model for songs with album, artist, song name, filename, filepath
         File name is stored to extract song name and artist
         File path is stored to potentially extract the album

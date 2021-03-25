@@ -3,7 +3,10 @@ from logger import *
 import reprlib
 
 def transform(song_file):
-    "When given a filename, transform it into a Track object"
+    """
+        When given a filename, transform it into a Track object
+    """
+
     # take this path when we have a song with no album
     if (len(song_file) == 1):
         # one dash means the song is split between song and artist
