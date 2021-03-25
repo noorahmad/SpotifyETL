@@ -11,10 +11,14 @@ def transform(song_file):
             # 90% percent of the time the song is split like so (artist) - (song)
             file_split = song_file[0].split("-")
             track_obj = track.Track(clean(file_split[1]),
-                                    file_split[0],
+                                    "",
                                     "",
                                     song_file[0], 
                                     song_file[0])
+            
+            # TODO: Python is really fucking stupid and this is only a temporary solution
+            track_obj.artist = file_split[0]
+            
         # if there's more than one dash then deal with it later
         else:
             logger.info('Too many dashes -- ' + song_file[0])
