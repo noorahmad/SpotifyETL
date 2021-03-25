@@ -18,7 +18,7 @@ def read_auth_code():
     auth_code = open('auth_code.txt', 'r')
     return auth_code.read()
 
-# authenticate with spotify etl and return response
+# authenticate with spotify api and return response
 def authenticate():
     auth_response = requests.request("POST", spotify.auth_url(), data=spotify.grant_type(), headers=spotify.headers())
     return json.loads(auth_response.text)
