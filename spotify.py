@@ -2,16 +2,20 @@ import requests
 import json
 
 class spotify:
-    def auth_url():
-        return 'https://accounts.spotify.com/api/token'
-    def grant_type():
-        return 'grant_type=client_credentials'
-    def headers():
-        return {
-            'Content-Type': "application/x-www-form-urlencoded",
-            'cache-control': "no-cache",
-            'Authorization': 'Basic ' + read_auth_code()
-        }
+    """
+        put spotify request and response methods in here
+    """
+    def auth_request():
+        def auth_url():
+            return 'https://accounts.spotify.com/api/token'
+        def grant_type():
+            return 'grant_type=client_credentials'
+        def headers():
+            return {
+                'Content-Type': "application/x-www-form-urlencoded",
+                'cache-control': "no-cache",
+                'Authorization': 'Basic ' + read_auth_code()
+            } 
 
 # read authentication code from text file
 def read_auth_code():
@@ -20,5 +24,7 @@ def read_auth_code():
 
 # authenticate with spotify api and return response
 def authenticate():
-    auth_response = requests.request("POST", spotify.auth_url(), data=spotify.grant_type(), headers=spotify.headers())
+    auth_response = requests.request("POST", spotify.auth_request().auth_url(), 
+                                             data=spotify.auth_request().grant_type(), 
+                                             headers=spotify.auth_request().headers())
     return json.loads(auth_response.text)
