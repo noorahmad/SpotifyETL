@@ -1,5 +1,9 @@
 import os
 from logger import *
+import shutil
+
+def root():
+    return "Music-Test//"
 
 def read_all_files(filepath):
     """
@@ -15,3 +19,19 @@ def read_all_files(filepath):
         return file_list
     except Exception as ex:
         logger.error(ex)
+
+def move(source, destination):
+    """
+        Move a file to another folder
+    """
+    try:
+        shutil.move(source, destination)
+        logger.info('Moved: [' + source + '] to [' + desintation + ']')
+    except Exception as ex:
+        logger.error(ex)
+
+def delete(source):
+    """
+        Delete a file from a given folder
+    """
+    os.remove(source)
