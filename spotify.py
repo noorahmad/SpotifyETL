@@ -17,6 +17,14 @@ class spotify:
                 'Authorization': 'Basic ' + read_auth_code()
             } 
 
+    # search obj
+    def search(song_name, artist):
+        url = "https://api.spotify.com/v1/search"
+        query_string = { 
+                        "q": "{song_name} - {artist}".format(song_name, artist), 
+                        "type": "track" 
+                       }
+
 # read authentication code from text file
 def read_auth_code():
     auth_code = open('auth_code.txt', 'r')

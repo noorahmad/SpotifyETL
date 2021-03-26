@@ -26,6 +26,7 @@ def transform(song_file):
             move(root() + song_file[0], "quarantine")
             logger.info("Couldn't parse the song: " + song_file[0])
             return None
+
     # this song came from a subfolder so it most likely has an album
     elif(len(song_file) == 2):
         file_split = parse_song_file(song_file[1])
@@ -35,7 +36,6 @@ def transform(song_file):
                                     "",
                                     song_file[1], 
                                     song_file[0] + "/" + song_file[1])
-            print(track_obj.filepath)
             # TODO: Python is really fucking stupid and this is only a temporary solution
             track_obj.artist = file_split[0]
             return track_obj
@@ -44,6 +44,7 @@ def transform(song_file):
             move(root() + song_file[0] + "//" + song_file[1], "quarantine")
             logger.info("Couldn't parse the song: " + song_file[0])
             return None
+
     # too many subfolders, we will deal with these later
     else:
         move(root() + song_file[0], "quarantine")

@@ -9,6 +9,7 @@ def read_all_files(filepath):
     """
         Reads files of the given file path and return in an array
     """
+
     file_list = []
     try:
         for root, dirs, files, in os.walk(filepath):
@@ -24,6 +25,7 @@ def move(source, destination):
     """
         Move a file to another folder
     """
+
     try:
         shutil.move(source, destination)
         logger.info('Moved: [' + source + '] to [' + desintation + ']')
@@ -34,4 +36,5 @@ def delete(source):
     """
         Delete a file from a given folder
     """
+
     os.remove(source)
