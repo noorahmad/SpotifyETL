@@ -4,7 +4,12 @@ from models import track
 from extract import *
 from transform import *
 
-song_files = read_all_files('Music-Test')
+# retrieve all of the song files
+song_files = read_all_files('music')
+
+# authenticate with spotify
+auth = authenticate()
+
 for file in song_files:
     # parse song into track object
     track_obj = transform(file)
@@ -16,16 +21,13 @@ for file in song_files:
     # move it to the dropbox
     move(root() + track_obj.filepath, "dropbox")
 
-    # use the track object to create a request obj
-
-
     # use request obj to search for the song in spotify
+    response_items = spotify.search(track_obj, auth['access_token'])
+    if (response_items == None):
+        continue
 
-    # if we get an OKAY response look through the object for the song
-
-    # if we don't get an okay response, quarantine the track
-
-    # if we do get an okay response but can't find the song in the response, quarantine the track
+    # take parsed response find best match
+    match = find_match(response_items, track_obj)
 
     # if we are able to find the song save the ID
 
