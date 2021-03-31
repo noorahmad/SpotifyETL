@@ -1,8 +1,19 @@
 from models import track
 from logger import *
 from extract import *
+from spotify import *
 import reprlib
 
+class search_obj_response:
+        """
+            the parsed response object from searching in spotify
+            song="",    artist="",  album="",   id=""
+        """
+        def __init__(self, song="", artist="", album="", id=""):
+            self.song = song
+            self.artist = artist,
+            self.album = album,
+            self.id = id
 
 def transform(song_file):
     """
@@ -24,7 +35,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0], "quarantine")
-            logger.info("Couldn't parse the song: " + song_file[0])
+            logger.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # this song came from a subfolder so it most likely has an album
@@ -42,7 +53,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0] + "//" + song_file[1], "quarantine")
-            logger.info("Couldn't parse the song: " + song_file[0])
+            logger.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # too many subfolders, we will deal with these later
@@ -57,13 +68,12 @@ def clean(that_part):
 
     # since shit could get lost in translation keep a copy of the file before
     before = that_part
-    that_part = that_part.replace('(Original Mix)', '').replace('[www.slider.kz]', '')
-    that_part = that_part.replace('Original Mix', '')
+    that_part = that_part.replace('[www.slider.kz]', '')
     that_part = that_part.replace('.mp3', '')
     that_part = that_part.replace('.wav', '')
     that_part = that_part.replace('myfreemp3.vip', '')
 
-    logger.info("Before {before} - After {after}".format(before=before,after=that_part))
+    logger.info("Before [{before}] - After [{after}]".format(before=before,after=that_part))
     return that_part
 
 def parse_song_file(song_file):
@@ -78,3 +88,29 @@ def parse_song_file(song_file):
     else:
         return None
 
+def parse_search_response(search_response):
+    """
+        Parse response from Spotify Search API call
+    """
+    search_obj_arr = []
+    search_obj = json.loads(search_response)
+
+    # api search returned no results
+    if (search_obj['tracks']['total'] == 0):
+        return None
+    try:
+        logger.info('Attempting to parse search response')
+        items = search_obj['tracks']['items']
+        for item in items:
+            album=""
+            if (item['album']['album_type'] != 'single'):
+                album=item['album']['album_type']
+            artist=item['artists'][0]['name']
+            song=item['name']
+            id=item['id']
+            search_response_object = search_obj_response(song, "", album, id)
+            search_response_object.artist = artist
+            search_obj_arr.append(search_response_object)
+        return search_obj_arr
+    except Exception as ex:
+        logger.error('Error parsing response: ' + ex)
