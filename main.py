@@ -19,18 +19,26 @@ for file in song_files:
         continue
 
     # move it to the dropbox
-    move(root() + track_obj.filepath, "dropbox")
+#    move(root() + track_obj.filepath, "dropbox")
 
     # use request obj to search for the song in spotify
-    response_items = spotify.search(track_obj, auth['access_token'])
+    response_items = spotify_req.search("",track_obj, auth['access_token'])
     if (response_items == None):
         continue
 
     # take parsed response find best match
-    match = find_match(response_items, track_obj)
-
-    # if we are able to find the song save the ID
+    match = find_match(track_obj, response_items)
 
     # use the response ID to save the song to spotify
-
+    url="https://api.spotify.com/v1/playlists/6X2Bt8i7kmf0LQsLr1FSER/tracks?uris=" + match.id
+    headers = {
+                'Content-Type': "application/json",
+                'Accept': "application/json",
+                'Authorization': "Bearer " + auth['access_token'],
+                'cache-control': "no-cache",
+              }
+    response = requests.request("POST", url, data="",
+                                            headers=headers,
+                                            params="")
+    print(response.text)
     # delete the track from the dropbox

@@ -1,8 +1,20 @@
 from models import track
-from logger import *
-from extract import *
-from spotify import *
+import logger
+import extract
+import spotify
 import reprlib
+import shutil
+import json
+
+def root():
+    return "music/"
+
+def dropbox():
+    return "dropbox/"
+
+def quarantine():
+    return "quarantine/"
+
 
 class search_obj_response:
         """
@@ -14,6 +26,16 @@ class search_obj_response:
             self.artist = artist,
             self.album = album,
             self.id = id
+
+def move(source, destination):
+    """
+        Move a file to another folder
+    """
+    try:
+        shutil.move(source, destination)
+        logger.logging.info('Moved: [' + source + '] to [' + destination + ']')
+    except Exception as ex:
+        logger.logging.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=ex))
 
 def transform(song_file):
     """
@@ -35,7 +57,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0], "quarantine")
-            logger.error("Couldn't parse the song: " + song_file[0])
+            logger.logging.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # this song came from a subfolder so it most likely has an album
@@ -53,7 +75,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0] + "//" + song_file[1], "quarantine")
-            logger.error("Couldn't parse the song: " + song_file[0])
+            logger.logging.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # too many subfolders, we will deal with these later
@@ -73,7 +95,7 @@ def clean(that_part):
     that_part = that_part.replace('.wav', '')
     that_part = that_part.replace('myfreemp3.vip', '')
 
-    logger.info("Before [{before}] - After [{after}]".format(before=before,after=that_part))
+    logger.logging.info("Before [{before}] - After [{after}]".format(before=before,after=that_part))
     return that_part
 
 def parse_song_file(song_file):
@@ -99,7 +121,7 @@ def parse_search_response(search_response):
     if (search_obj['tracks']['total'] == 0):
         return None
     try:
-        logger.info('Attempting to parse search response')
+        logger.logging.info('Attempting to parse search response')
         items = search_obj['tracks']['items']
         for item in items:
             album=""
@@ -113,4 +135,4 @@ def parse_search_response(search_response):
             search_obj_arr.append(search_response_object)
         return search_obj_arr
     except Exception as ex:
-        logger.error('Error parsing response: ' + ex)
+        logger.logging.error('Error parsing response: ' + ex)

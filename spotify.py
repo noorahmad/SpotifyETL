@@ -4,23 +4,23 @@ from logger import *
 from extract import *
 from transform import *
 
-class spotify:
+class spotify_req:
     """
         spotify request and response methods
     """
     class auth_request:
-        def auth_url():
+        def auth_url(self):
             return 'https://accounts.spotify.com/api/token'
-        def grant_type():
+        def grant_type(self):
             return 'grant_type=client_credentials'
-        def headers():
+        def headers(self):
             return {
                 'Content-Type': "application/x-www-form-urlencoded",
                 'cache-control': "no-cache",
                 'Authorization': 'Basic ' + read_auth_code()
             } 
 
-    def search(track_obj, access_token):
+    def search(self, track_obj, access_token):
         """
             song_name="",   artist="",  access_token=""
             Searches for a song using the Spotify API and parses the response
@@ -48,12 +48,12 @@ class spotify:
             search_obj_arr = parse_search_response(response.text)
             if (search_obj_arr == None):
                 move(dropbox() + track_obj.filepath, "quarantine")
-                logger.error('Couldnt find song in spotify: [' + song_query + ']')
+                logger.logging.error('Couldnt find song in spotify: [' + song_query + ']')
 
             return search_obj_arr
 
         except Exception as ex:
-            logger.error('Error searching in Spotify for [' + song_query + ']')
+            logger.logging.error('Error searching in Spotify for [' + song_query + ']')
 
 
 # read authentication code from text file
@@ -64,11 +64,11 @@ def read_auth_code():
 # authenticate with spotify api and return response
 def authenticate():
     try:
-        auth_response = requests.request("POST", spotify.auth_request.auth_url(), 
-                                                 data=spotify.auth_request.grant_type(), 
-                                                 headers=spotify.auth_request.headers())
-        logger.info('Successfully authenticated with Spotify:' + auth_response.text)
+        auth_response = requests.request("POST", spotify_req.auth_request.auth_url(""), 
+                                                 data=spotify_req.auth_request.grant_type(""), 
+                                                 headers=spotify_req.auth_request.headers(""))
+        logger.logging.info('Successfully authenticated with Spotify:' + auth_response.text)
         return json.loads(auth_response.text)
     except Exception as ex:
-        logger.error('Error authenticating with Spotify: ' + ex)
+        logger.logging.error('Error authenticating with Spotify: ' + ex)
 

@@ -1,15 +1,11 @@
 import os
 from logger import *
 import shutil
+from models import track
+from fuzzywuzzy import fuzz
+from fuzzywuzzy import process
+import transform
 
-def root():
-    return "music/"
-
-def dropbox():
-    return "dropbox/"
-
-def quarantine():
-    return "quarantine/"
 
 def read_all_files(filepath):
     """
@@ -27,16 +23,7 @@ def read_all_files(filepath):
     except Exception as ex:
         logger.error('Error Reading Files: ' + ex)
 
-def move(source, destination):
-    """
-        Move a file to another folder
-    """
 
-    try:
-        shutil.move(source, destination)
-        logger.info('Moved: [' + source + '] to [' + destination + ']')
-    except Exception as ex:
-        logger.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source, destination, ex))
 
 def delete(source):
     """
@@ -46,8 +33,36 @@ def delete(source):
         os.remove(source)
         logger.info('Deleted: [' + source +']')
     except Exception as ex:
-        logger.error('Error deleting file from [{source}] | {ex}'.format(source, ex))
+        logger.error('Error deleting file from [{source}] | {ex}'.format(source=source, ex=ex))
 
-def match(track_obj, search_responses):
-    return None
-            
+def find_match(track_obj, search_responses):
+    matching_index = 0
+    song_ratio = 0
+    artist_ratio = 0
+    index = 0
+
+    if (len(search_responses) == 1):
+        logger.info('Source: [{source_track} - {source_artist}], Match: [{match_track} - {match_artist}]'.format(source_track=track_obj.song,
+                                                                                                                 source_artist=track_obj.artist,
+                                                                                                                 match_track=search_responses[0].song,
+                                                                                                                 match_artist=search_responses[0].artist))
+        return search_responses[0]
+
+    for resp in search_responses:
+        this_song_ratio = fuzz.partial_ratio(track_obj.song, resp.song)
+        this_artist_ratio = fuzz.partial_ratio(track_obj.artist, resp.artist)
+
+        if (this_song_ratio >= song_ratio and this_artist_ratio >= artist_ratio):
+            song_ratio = this_song_ratio
+            artist_ratio = this_artist_ratio
+            matching_index = index
+
+        index += 1
+
+    match = search_responses[matching_index]
+
+    logger.info('Source: [{source_track} - {source_artist}], Match: [{match_track} - {match_artist}]'.format(source_track=track_obj.song,
+                                                                                                             source_artist=track_obj.artist,
+                                                                                                             match_track=match.song,
+                                                                                                             match_artist=match.artist))
+    return match
