@@ -51,12 +51,12 @@ class spotify_req:
             search_obj_arr = parse_search_response(response.text)
             if (search_obj_arr == None):
                 move(dropbox() + track_obj.filepath, "quarantine")
-                logger.logging.error('Couldnt find song in spotify: [' + song_query + ']')
+                logger.error('Couldnt find song in spotify: [' + song_query + ']')
 
             return search_obj_arr
 
         except Exception as ex:
-            logger.logging.error('Error searching in Spotify for [' + song_query + '] | ' + str(ex))
+            logger.error('Error searching in Spotify for [' + song_query + '] | ' + str(ex))
 
 
 # read authentication code from text file
@@ -70,8 +70,8 @@ def authenticate():
         auth_response = requests.request("POST", spotify_req.auth_request.auth_url(""), 
                                                  data=spotify_req.auth_request.grant_type(""), 
                                                  headers=spotify_req.auth_request.headers(""))
-        logger.logging.info('Successfully authenticated with Spotify:' + auth_response.text)
+        logger.info('Successfully authenticated with Spotify:' + auth_response.text)
         return json.loads(auth_response.text)
     except Exception as ex:
-        logger.logging.error('Error authenticating with Spotify: ' + ex)
+        logger.error('Error authenticating with Spotify: ' + ex)
 

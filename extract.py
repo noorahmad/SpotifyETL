@@ -13,14 +13,14 @@ def read_all_files(filepath):
 
     file_list = []
     try:
-        for root, files, in os.walk(filepath):
+        for root, dirs, files, in os.walk(filepath):
             for file in files:
                 with open(os.path.join(root, file), "r") as auto:
                     file_list.append(auto.name.split('\\')[1:])
         logger.info('Total songs read: ' + str(len(file_list)))
         return file_list
     except Exception as ex:
-        logger.error('Error Reading Files: ' + ex)
+        logger.error('Error Reading Files: ' + str(ex))
 
 def move(source, destination):
     """
@@ -28,9 +28,9 @@ def move(source, destination):
     """
     try:
         shutil.move(source, destination)
-        logger.logging.info('Moved: [' + source + '] to [' + destination + ']')
+        logger.info('Moved: [' + source + '] to [' + destination + ']')
     except Exception as ex:
-        logger.logging.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=ex))
+        logger.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=str(ex)))
 
 def delete(source):
     """

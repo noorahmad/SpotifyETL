@@ -1,6 +1,6 @@
-from extract import find_match, read_all_files
+from extract import find_match, read_all_files, move
 from spotify import authenticate, spotify_req
-from transform import transform
+from transform import transform, root
 
 # retrieve all of the song files
 song_files = read_all_files('music')
@@ -17,7 +17,7 @@ for file in song_files:
         continue
 
     # move it to the dropbox
-#    move(root() + track_obj.filepath, "dropbox")
+    move(root() + track_obj.filepath, "dropbox")
 
     # use request obj to search for the song in spotify
     response_items = spotify_req.search("",track_obj, auth['access_token'])

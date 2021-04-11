@@ -47,7 +47,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0], "quarantine")
-            logger.logging.error("Couldn't parse the song: " + song_file[0])
+            logger.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # this song came from a subfolder so it most likely has an album
@@ -65,7 +65,7 @@ def transform(song_file):
         else: 
             # Log and quarantine
             move(root() + song_file[0] + "//" + song_file[1], "quarantine")
-            logger.logging.error("Couldn't parse the song: " + song_file[0])
+            logger.error("Couldn't parse the song: " + song_file[0])
             return None
 
     # too many subfolders, we will deal with these later
@@ -85,7 +85,7 @@ def clean(that_part):
     that_part = that_part.replace('.wav', '')
     that_part = that_part.replace('myfreemp3.vip', '')
 
-    logger.logging.info("Before [{before}] - After [{after}]".format(before=before,after=that_part))
+    logger.info("Before [{before}] - After [{after}]".format(before=before,after=that_part))
     return that_part
 
 def parse_song_file(song_file):
@@ -111,7 +111,7 @@ def parse_search_response(search_response):
     if (search_obj['tracks']['total'] == 0):
         return None
     try:
-        logger.logging.info('Attempting to parse search response')
+        logger.info('Attempting to parse search response')
         items = search_obj['tracks']['items']
         for item in items:
             album=""
@@ -125,4 +125,4 @@ def parse_search_response(search_response):
             search_obj_arr.append(search_response_object)
         return search_obj_arr
     except Exception as ex:
-        logger.logging.error('Error parsing response: ' + ex)
+        logger.error('Error parsing response: ' + ex)
