@@ -1,10 +1,10 @@
-from models import track
-import logger
-import extract
-import spotify
-import reprlib
-import shutil
 import json
+import shutil
+
+from extract import move
+from logger import logger
+from models import track
+
 
 def root():
     return "music/"
@@ -26,16 +26,6 @@ class search_obj_response:
             self.artist = artist,
             self.album = album,
             self.id = id
-
-def move(source, destination):
-    """
-        Move a file to another folder
-    """
-    try:
-        shutil.move(source, destination)
-        logger.logging.info('Moved: [' + source + '] to [' + destination + ']')
-    except Exception as ex:
-        logger.logging.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=ex))
 
 def transform(song_file):
     """

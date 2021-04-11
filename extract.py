@@ -1,10 +1,9 @@
 import os
-from logger import *
 import shutil
-from models import track
-from fuzzywuzzy import fuzz
-from fuzzywuzzy import process
-import transform
+
+from fuzzywuzzy import fuzz, process
+
+from logger import logger
 
 
 def read_all_files(filepath):
@@ -14,7 +13,7 @@ def read_all_files(filepath):
 
     file_list = []
     try:
-        for root, dirs, files, in os.walk(filepath):
+        for root, files, in os.walk(filepath):
             for file in files:
                 with open(os.path.join(root, file), "r") as auto:
                     file_list.append(auto.name.split('\\')[1:])
@@ -23,7 +22,15 @@ def read_all_files(filepath):
     except Exception as ex:
         logger.error('Error Reading Files: ' + ex)
 
-
+def move(source, destination):
+    """
+        Move a file to another folder
+    """
+    try:
+        shutil.move(source, destination)
+        logger.logging.info('Moved: [' + source + '] to [' + destination + ']')
+    except Exception as ex:
+        logger.logging.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=ex))
 
 def delete(source):
     """

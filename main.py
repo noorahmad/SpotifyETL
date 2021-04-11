@@ -1,8 +1,6 @@
-from spotify import *
-from logger import *
-from models import track
-from extract import *
-from transform import *
+from extract import find_match, read_all_files
+from spotify import authenticate, spotify_req
+from transform import transform
 
 # retrieve all of the song files
 song_files = read_all_files('music')
@@ -30,15 +28,5 @@ for file in song_files:
     match = find_match(track_obj, response_items)
 
     # use the response ID to save the song to spotify
-    url="https://api.spotify.com/v1/playlists/6X2Bt8i7kmf0LQsLr1FSER/tracks?uris=" + match.id
-    headers = {
-                'Content-Type': "application/json",
-                'Accept': "application/json",
-                'Authorization': "Bearer " + auth['access_token'],
-                'cache-control': "no-cache",
-              }
-    response = requests.request("POST", url, data="",
-                                            headers=headers,
-                                            params="")
-    print(response.text)
+    
     # delete the track from the dropbox

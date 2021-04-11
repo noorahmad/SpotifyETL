@@ -1,8 +1,11 @@
-import requests
 import json
-from logger import *
-from extract import *
-from transform import *
+
+import requests
+
+from extract import move
+from logger import logger
+from transform import dropbox, parse_search_response
+
 
 class spotify_req:
     """
@@ -53,7 +56,7 @@ class spotify_req:
             return search_obj_arr
 
         except Exception as ex:
-            logger.logging.error('Error searching in Spotify for [' + song_query + ']')
+            logger.logging.error('Error searching in Spotify for [' + song_query + '] | ' + str(ex))
 
 
 # read authentication code from text file
