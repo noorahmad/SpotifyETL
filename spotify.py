@@ -1,6 +1,7 @@
 import json
 
 import requests
+import base64
 
 from extract import move
 from logger import logger
@@ -12,15 +13,15 @@ class spotify_req:
         spotify request and response methods
     """
     class auth_request:
-        def auth_url(self):
+        def auth_url():
             return 'https://accounts.spotify.com/api/token'
-        def grant_type(self):
+        def grant_type():
             return 'grant_type=client_credentials'
-        def headers(self):
+        def headers(auth_code):
             return {
                 'Content-Type': "application/x-www-form-urlencoded",
                 'cache-control': "no-cache",
-                'Authorization': 'Basic ' + read_auth_code()
+                'Authorization': 'Basic ' + auth_code
             } 
 
     def search(self, track_obj, access_token):
@@ -57,19 +58,41 @@ class spotify_req:
 
         except Exception as ex:
             logger.error('Error searching in Spotify for [' + song_query + '] | ' + str(ex))
+    
+    def add_to_spotify(uris, playlist_id, access_token):
+        # use the response ID to save the song to spotify
+        try:
+            url = "https://api.spotify.com/v1/playlists/" + playlist_id + "/tracks?"
+
+            payload = json.dumps({'uris':uris})
+
+            headers = {
+                        'Content-Type': "application/json",
+                        'Accept': "application/json",
+                        'Authorization': "Bearer " + access_token,
+                        'cache-control': "no-cache",
+                        }
+            response = requests.request("POST", url, data=payload,
+                                                    headers=headers,
+                                                    params="")
+            logger.info('Sending ' + str(len(uris)) + ' songs to spotify')
+        except Exception as ex:
+            logger.error('Error adding to spotify | ' + str(ex))
 
 
 # read authentication code from text file
-def read_auth_code():
-    auth_code = open('auth_code.txt', 'r')
-    return auth_code.read()
+def read_auth_code(id, secret):
+    return base64.b64encode(id + ':' + secret)
 
 # authenticate with spotify api and return response
-def authenticate():
+def authenticate(id, secret):
+
+    auth_code = read_auth_code(id, secret)
+
     try:
-        auth_response = requests.request("POST", spotify_req.auth_request.auth_url(""), 
-                                                 data=spotify_req.auth_request.grant_type(""), 
-                                                 headers=spotify_req.auth_request.headers(""))
+        auth_response = requests.request("POST", spotify_req.auth_request.auth_url(), 
+                                                 data=spotify_req.auth_request.grant_type(), 
+                                                 headers=spotify_req.auth_request.headers(auth_code))
         logger.info('Successfully authenticated with Spotify:' + auth_response.text)
         return json.loads(auth_response.text)
     except Exception as ex:
