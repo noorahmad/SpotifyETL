@@ -32,6 +32,7 @@ def transform(song_file):
         When given a filename, transform it into a Track object
     """
 
+    logger.info(song_file)
     # take this path when we have a song with no album
     if (len(song_file) == 1):
         file_split = parse_song_file(song_file[0])
@@ -111,8 +112,8 @@ def parse_search_response(search_response):
     if (search_obj['tracks']['total'] == 0):
         return None
     try:
-        logger.info('Attempting to parse search response')
         items = search_obj['tracks']['items']
+        logger.info('Attempting to parse search response | Total potential matches: ' + str(len(items)))
         for item in items:
             album=""
             if (item['album']['album_type'] != 'single'):
@@ -123,6 +124,7 @@ def parse_search_response(search_response):
             search_response_object = search_obj_response(song, "", album, id)
             search_response_object.artist = artist
             search_obj_arr.append(search_response_object)
+            logger.info('Parsed response| Artist: ' + artist + ' | Song: ' + song)
         return search_obj_arr
     except Exception as ex:
         logger.error('Error parsing response: ' + ex)

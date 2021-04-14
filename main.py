@@ -16,15 +16,19 @@ SPOTIPY_REDIRECT_URI = 'http://localhost:' + PORT_NUMBER
 SCOPE = 'playlist-modify-private playlist-modify-public'
 CACHE = '.spotipyoauthcache'
 
-# uris to add to spotify
-URIS = []  
 
-ACCESS_TOKEN = ""
+# uris to add to spotify
+global URIS
+
+global ACCESS_TOKEN
 
 
 ##############################################################
 
 def run_workflow(ACCESS_TOKEN):
+    URIS = []
+    PLAYLIST_ID = '4syTBdEq3o8D3ClyKFAbGj'
+
     # retrieve all of the song files
     song_files = read_all_files('music')
 
@@ -35,10 +39,10 @@ def run_workflow(ACCESS_TOKEN):
     for file in song_files:
         # parse song into track object
         track_obj = transform(file)
-
+        
         is_last_song = song_files[len(song_files) - 1] == file
     
-        skip = none_check(track_obj, is_last_song)
+        skip = none_check(track_obj, is_last_song, URIS, PLAYLIST_ID, ACCESS_TOKEN)
 
         if skip == True:
             continue
@@ -49,8 +53,9 @@ def run_workflow(ACCESS_TOKEN):
         # use request obj to search for the song in spotify
         response_items = spotify_req.search("",track_obj, auth['access_token'])
 
-        skip = none_check(track_obj, is_last_song)
+        skip = none_check(response_items, is_last_song, URIS, PLAYLIST_ID, ACCESS_TOKEN)
         if skip == True:
+            move(dropbox() + track_obj.filepath, "quarantine")
             continue
 
         # take parsed response find best match
@@ -67,7 +72,7 @@ def run_workflow(ACCESS_TOKEN):
 
 ##############################################################
 
-def none_check(obj, bool):
+def none_check(obj, bool, URIS, PLAYLIST_ID, ACCESS_TOKEN):
     skip = False
 
     if (obj == None and bool != True):
@@ -88,6 +93,8 @@ sp_oauth = oauth2.SpotifyOAuth( SPOTIPY_CLIENT_ID, SPOTIPY_CLIENT_SECRET,SPOTIPY
 
 def index():
 
+    ACCESS_TOKEN = ""
+
     token_info = sp_oauth.get_cached_token()
 
     if token_info:
@@ -101,7 +108,7 @@ def index():
             token_info = sp_oauth.get_access_token(code)
             ACCESS_TOKEN = token_info['access_token']
 
-    if access_token != "":
+    if ACCESS_TOKEN != "":
         print("Access token available! Trying to get user information...")
         sp = spotipy.Spotify(ACCESS_TOKEN)
         results = sp.current_user()

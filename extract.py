@@ -30,7 +30,7 @@ def move(source, destination):
         shutil.move(source, destination)
         logger.info('Moved: [' + source + '] to [' + destination + ']')
     except Exception as ex:
-        logger.error('Error moving file from: [{source}] to [{destination}] | {ex}'.format(source=source, desination=destination, ex=str(ex)))
+        logger.error('Error ')
 
 def delete(source):
     """

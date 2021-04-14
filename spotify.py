@@ -53,7 +53,7 @@ class spotify_req:
             if (search_obj_arr == None):
                 move(dropbox() + track_obj.filepath, "quarantine")
                 logger.error('Couldnt find song in spotify: [' + song_query + ']')
-
+                logger.error(response.text)
             return search_obj_arr
 
         except Exception as ex:
@@ -75,6 +75,7 @@ class spotify_req:
             response = requests.request("POST", url, data=payload,
                                                     headers=headers,
                                                     params="")
+            print(response.text)
             logger.info('Sending ' + str(len(uris)) + ' songs to spotify')
         except Exception as ex:
             logger.error('Error adding to spotify | ' + str(ex))
